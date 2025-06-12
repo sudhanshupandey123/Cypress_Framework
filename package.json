@@ -1,0 +1,23 @@
+{
+  "name": "cypress-ui-tests",
+  "version": "1.0.0",
+  "description": "UI automation tests migrated from Behave/Playwright to Cypress",
+  "scripts": {
+    "test": "cypress run",
+    "cypress:open": "cypress open"
+  },
+  "devDependencies": {
+    "@4tw/cypress-drag-drop": "^2.3.0",
+    "@badeball/cypress-cucumber-preprocessor": "^22.0.1",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.5",
+    "@cypress/webpack-preprocessor": "^6.0.4",
+    "cypress": "^13.0.0",
+    "cypress-xpath": "^2.0.1"
+  },
+  "dependencies": {
+    "cypress-grep": "^3.0.4",
+    "pixelmatch": "^7.1.0",
+    "pngjs": "^7.0.0",
+    "sharp": "^0.34.1"
+  }
+}
