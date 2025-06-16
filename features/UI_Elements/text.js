@@ -7,19 +7,19 @@ function getTextFromElement(element) {
     const el = $el[0];
     if (!el) return null;
 
-    // For input or textarea, return value
+    
     if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
       return el.value;
     }
-    // For elements with 'title' attribute
+  
     if (el.hasAttribute('title') && el.getAttribute('title')) {
       return el.getAttribute('title');
     }
-    // For elements with text content
+   
     if (el.textContent && el.textContent.trim() !== '') {
       return el.textContent.trim();
     }
-    // Fallback: try innerText
+   
     if (el.innerText && el.innerText.trim() !== '') {
       return el.innerText.trim();
     }
@@ -42,7 +42,7 @@ class Text extends SimpleUIElement {
   }
 
   getTexts() {
-    // Returns an array of text values for all elements matching the selector
+
     return this.elements.then($elements => {
       return Cypress._.map($elements, el => el.value || el.title || el.textContent || '');
     });

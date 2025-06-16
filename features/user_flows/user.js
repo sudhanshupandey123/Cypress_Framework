@@ -1,5 +1,4 @@
-// cypress/support/user.js
-// Cypress/Node.js version of the User class for UI automation
+
 const { Button } = require('../UI_Elements/button');
 const { Checkbox } = require('../UI_Elements/checkbox');
 const { Collapse } = require('../UI_Elements/collapse');
@@ -9,56 +8,34 @@ const { SimpleUIElement } = require('../UI_Elements/simple_ui_element');
 const { Text } = require('../UI_Elements/text');
 const { Toggle } = require('../UI_Elements/toggle');
 const {Loader} = require('../UI_Elements/loader');
-// const {DateTime} = require('../UI_Elements/date_time');
+const { FileHandler } = require('../UI_Elements/File');
+
 class User {
   constructor(username, password) {
     this.username = username;
     this.password = password;
   }
 
-  login(host) {
-    cy.login(this.username, this.password, host);
-  }
-
-  logout() {
-    // Implement logout logic as needed
-    cy.get('button:contains("Logout")').click({ force: true });
-  }
-
-  sees(text, maxTime = 10000) {
-    cy.contains(text, { timeout: maxTime }).should('be.visible');
-  }
-
-  get loggedIn() {
-    return cy.get('.name').should('be.visible');
-  }
-
   refreshBrowser() {
     cy.reload();
   }
 
-  navigateTo(location) {
-    cy.visit(location);
-  }
-
-  navigatePageTo(url) {
-    cy.visit(url);
-  }
-
+  //tested
   enterText(selector, inputText, validatePostCondition = true, clearText = true) {
     const textInput = new Text(selector);
     if (clearText) textInput.clear();
     textInput.enterText(inputText, validatePostCondition, clearText);
   }
-
-  selectValueFromDropdown(dropdownLocator, optionLocator, valueToSelect, validatePostCondition = true) {
-    new DropDown(dropdownLocator,optionLocator).selectValueFromDropdown(valueToSelect, validatePostCondition);
+  //tested
+  selectValueFromDropdown(dropdownLocator, optionLocator, valueToSelect, validationLocator, validatePostCondition = true) {
+    new DropDown(dropdownLocator,optionLocator).selectValueFromDropdown(valueToSelect, validationLocator, validatePostCondition);
   }
 
-  getValueFromDropdown(dropdownName) {
-    return new DropDown(dropdownName).getValue();
+    //tested
+  getValueFromDropdown(dropdownLocator) {
+    return new DropDown(dropdownLocator).getValue();
   }
-
+  //tested
   expandsDetails(selector) {
     new Collapse(selector).expand();
   }
@@ -66,67 +43,61 @@ class User {
   seesCheckboxChecked(selector) {
     return new Checkbox(selector).getValue();
   }
-
+  //tested
   enablesCheckbox(selector, validationSelector) {
     new Checkbox(selector, { validationSelector }).check();
   }
-
+  //tested
   disablesCheckbox(selector, validationSelector) {
     new Checkbox(selector, { validationSelector }).uncheck();
   }
-
+  //tested
   enablesToggle(selector) {
     new Toggle(selector).enable();
   }
-
+  //tested
   disablesToggle(selector) {
     new Toggle(selector).disable();
   }
-
+  //tested
   waitForLoaderToDisappear(locator) {
     Loader.waitForLoaderToDisappear(locator)
   }
   
-  waitsForPageToLoad() {
-    cy.get('.ant-spin-dot', { timeout: 10000 }).should('not.exist');
-  }
-
-  cannotEditText(selector) {
-    new Text(selector).areInputsDisabled().should('be.true');
-  }
-
+  //tested
   listsVisibleTexts(selector) {
     return new Text(selector).getTexts();
   }
 
+  //tested
   click(selector) {
     new Button(selector).click();
   }
 
+  //tested
   downloads(selector, saveAs) {
     new File(selector).download(saveAs);
   }
 
-  waitsForElementToAppear(selector, timeout = 10000) {
-    return new SimpleUIElement(selector, { maxTime: timeout }).element.should('be.visible');
+
+  //tested
+  downloadFile(selector, fileName) {
+    new FileHandler().downloadFile(selector, fileName)
   }
 
-  uploadsAFile(selector, filepath) {
-    new File(selector).uploadFile(filepath);
+  //tested
+  uploadFile(selector, filepath) {
+    new FileHandler().uploadFile(selector,filepath);
   }
 
-  seesNumberOfElementsDisplayed(selector) {
-    return new SimpleUIElement(selector).count();
+  //tested
+  validateUploadedFile(selector, filePath){
+    return new FileHandler().validateUploadedFile(selector, filePath);
+
   }
 
-  doesNotSee(text) {
-    cy.contains(text).should('not.exist');
-  }
 
-  waitForElementToAppears(selector) {
-    return new SimpleUIElement(selector).element.should('be.visible');
-  }
-
+  //tested
   dragAndDrop(source, target) {
     new DragAndDrop().dragAndDrop(source,target);
   }
@@ -135,31 +106,21 @@ class User {
     return new SimpleUIElement(selector).element.should('be.visible');
   }
 
+  //tested
   countsVisibleElements(selector) {
     return new SimpleUIElement(selector).count();
   }
 
-  getValueBasedOnAttribute(selector, attributeName) {
-    return cy.get(selector).invoke('attr', attributeName);
-  }
 
+  //tested
   getText(selector) {
     return new Text(selector).getText();
   }
 
-  hoverElement(selector) {
-    cy.get(selector).trigger('mouseover');
-  }
-
-  iframeObject(selector) {
-    // Requires cypress-iframe plugin
-    return cy.frameLoaded(selector);
-  }
-
  
-  waitForElementToDisappear(selector) {
-    cy.get(selector, { timeout: 60000 }).should('not.be.visible');
-  }
+
+  
+
 }
 
 module.exports = { User };

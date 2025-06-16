@@ -45,7 +45,22 @@ Scenario: Loader Testing
     When User Click on the Button to show loader
     Then User verify text after loader is displayed
     
+
+@UploadFileTesting
+Scenario: Download and Upload Testing
+    Given User is on Upload App
+    When User Click on the Download Button
+    When User Upload A File
     
+    Then User verify the file is uploaded successfully
+    
+
+  @DownloadFileTesting
+  Scenario: Download Testing
+    
+    Given User Click on the Download Button
+    
+
 
   
    

@@ -1,4 +1,4 @@
-// Cypress equivalent for Collapse class from Python
+
 const { SimpleUIElement } = require('../UI_Elements/simple_ui_element');
 
 class Collapse extends SimpleUIElement {
@@ -11,7 +11,6 @@ class Collapse extends SimpleUIElement {
   }
 
   getValue() {
-    // Returns a Cypress chainable that asserts aria-expanded is 'true'
     return this.element.should('have.attr', 'aria-expanded', 'true');
   }
 
