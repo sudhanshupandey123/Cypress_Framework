@@ -41,9 +41,25 @@ When('User Click on PIM Tab', () => {
 })
 
 Then('User select any option from the Dropdown', () => {
-  user.selectValueFromDropdown("((//div[text()='-- Select --'])[2]//parent::div)[1]", "//span[text()='Chief Executive Officer']/parent::div", "Chief Executive Officer")
+  user.selectValueFromDropdown("((//div[text()='-- Select --'])[2]//parent::div)[1]", "//span[text()='Chief Executive Officer']/parent::div", "Chief Executive Officer", "(//div[@class='oxd-select-text-input'])[3]")
   cy.wait(3000)
-  });
+  user.getValueFromDropdown("(//div[@class='oxd-select-text-input'])[3]").then((value) => {
+  cy.log(value);
+  cy.wait(3000);
+  user.countsVisibleElements("(//div[@class='oxd-select-text-input'])").then((count) => {
+    cy.log("Number of visible elements: " + count);
+  cy.wait(3000);
+  user.listsVisibleTexts("//label[@class='oxd-label']").then((texts) => {
+    cy.log("Visible texts: " + texts.join(", "));
+    for (i of texts){
+      cy.wait(300)
+      cy.log(i)
+    }
+
+  })
+  })
+})
+});
 
 
 Then('User enable the CheckBox',()=>{
@@ -117,5 +133,32 @@ Then('User verify text after loader is displayed', () => {
 })
 
 
+Given('User is on Download and Upload App', () => {
+  cy.visit("https://practice.expandtesting.com/upload");
+  cy.wait(1000);
+  user.uploadFile("//input[@id='fileInput']","C:\\Users\\a00571008\\Downloads\\Sudhanshu_Pandey (2).pdf")
+  cy.wait(3000);
+});
 
+
+When('User Upload A File', () => {
+  user.uploadFile("//input[@id='fileInput']","C:\\Users\\a00571008\\Downloads\\Sudhanshu_Pandey (2).pdf")
+  cy.wait(3000);
+  user.click("//button[text()='Upload']")
+});
+
+Then('User verify the file is uploaded successfully', () => {
+  if (user.validateUploadedFile("//div[@id='uploaded-files']","C:\\Users\\a00571008\\Downloads\\Sudhanshu_Pandey (2).pdf")){
+    cy.log("File uploaded successfully");
+  }
+  
+});
+
+Given('User Click on the Download Button', () => {
+  cy.visit('https://demo.automationtesting.in/FileDownload.html');
+  cy.wait(2000);
+  user.downloadFile("(//a[text()='Download'])[1]",'XYZ')
+  cy.wait(5000);
+
+});
 

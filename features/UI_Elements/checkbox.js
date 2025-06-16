@@ -1,4 +1,4 @@
-// Cypress equivalent for Checkbox class from Python
+
 const { SimpleUIElement } = require('../UI_Elements/simple_ui_element');
 
 class Checkbox extends SimpleUIElement {
@@ -30,7 +30,7 @@ class Checkbox extends SimpleUIElement {
       if (isChecked !== checked) {
         cy.wrap($el).click({force: true});
       }
-      // Post-condition: ensure checked state
+      
       if (checked) {
         cy.wrap($el).should('be.checked');
       } else {

@@ -1,4 +1,4 @@
-// Cypress equivalent for Toggle class from Python
+
 const { SimpleUIElement } = require('../UI_Elements/simple_ui_element');
 
 class Toggle extends SimpleUIElement {
@@ -25,7 +25,7 @@ class Toggle extends SimpleUIElement {
 
   getValue() {
     const el = this.validationSelector ? cy.xpath(this.validationSelector) : this.element;
-    // Try to get 'aria-checked' first (for div toggles), fallback to 'checked' (for input), fallback to 'value'
+    
     return el.then($el => {
       if ($el.attr('aria-checked') !== undefined) {
         return $el.attr('aria-checked') === 'true';
@@ -34,7 +34,7 @@ class Toggle extends SimpleUIElement {
       } else if ($el.attr('value') !== undefined) {
         return $el.attr('value') === 'true';
       } else {
-        // Default to false if no known toggle attribute
+        
         return false;
       }
     });
@@ -47,7 +47,7 @@ class Toggle extends SimpleUIElement {
       if (isChecked !== checked) {
         el.click({ force: true });
       }
-      // Use Cypress's built-in retry-ability to wait for the correct state
+      
       el.then($el => {
         if ($el.attr('aria-checked') !== undefined) {
           cy.wrap($el).should('have.attr', 'aria-checked', checked ? 'true' : 'false');
