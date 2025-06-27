@@ -6,14 +6,9 @@ const config = require('../cypress.env.json');
 const { PROJECT_ROOT } = require('../features/waits/variables');
 
 function loadEnv() {
-  // In Cypress, environment variables are loaded from cypress.env.json
-  // Optionally, you can load .env files using dotenv if needed
-  // require('dotenv').config({ path: path.join(PROJECT_ROOT, '.env') });
-  // console.debug('Environment loaded');
 }
 
 function getFromEnv(name, required = true) {
-  // Prefer Cypress.env, fallback to cypress.env.json
   let value = Cypress.env(name);
   if (value === undefined) value = config[name];
   if (required && (value === undefined || value === null || value === '')) {

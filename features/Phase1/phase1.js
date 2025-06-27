@@ -1,11 +1,10 @@
-// cypress/e2e/step_definitions/orangehrm.js
-// Step definition for opening OrangeHRM application using Cypress and Cucumber BDD
-
 const { Given, When, Then } = require('@badeball/cypress-cucumber-preprocessor');
-const { User } = require('../user_flows/user'); // Corrected import path to match workspace structure
+const { UI_User } = require('../user_flows/ui_user'); 
+const ui_user = new UI_User("Admin", "yourPassword"); 
+const { setContextVar } = require('../../cypress/utils/utils');
+const {getContextVar} = require('../../cypress/utils/utils');
 
 
-const user = new User("Admin", "yourPassword"); // Use actual credentials or config
 
 
 Given('User is on OrangeHRM application', () => {
@@ -13,65 +12,70 @@ Given('User is on OrangeHRM application', () => {
 }
 );
 
-When('User Enter with valid Login Credentials', () => {
-  user.enterText("//input[@name='username']", "Admin");
-  cy.wait(3000)
-  user.getText("//input[@name='username']").then((text) => {
+When('User Enter with valid Login Credentials', function () {
+  ui_user.enterText("//input[@name='username']", "Admin");
+  ui_user.getText("//input[@name='username']").then((text) => {
   cy.log("Username: " + text);
-  cy.log(5000)
-  user.enterText("//input[@type='password']","admin123")
-  user.click("//button[text()=' Login ']")
-  cy.wait(3000)
+  UserName = text;
+  setContextVar(this,"UserName", UserName);
+  ui_user.enterText("//input[@type='password']","admin123")
+  ui_user.click("//button[text()=' Login ']")
   })
 }
 );
 
-Then('User should be able to login successfully', () =>{
-  user.getText("//h6[text()='Dashboard']").then((text) => {
+Then('User should be able to login successfully', function () {
+  ui_user.getText("//h6[text()='Dashboard']").then((text) => {
     expect(text).to.eq("Dashboard");
     cy.log("Login successful, Dashboard text: " + text);
   });
+  cy.log(getContextVar(this, "UserName"));
+  
+  expect(this.vars.UserName).to.eq("Admin");
+  cy.log(this.vars)
 });
 
 
 When('User Click on PIM Tab', () => {
-  user.click("//span[text()='PIM']")
-  cy.wait(3000);
+ui_user.click("//span[text()='PIM']")
+  
 
 })
 
-Then('User select any option from the Dropdown', () => {
-  user.selectValueFromDropdown("((//div[text()='-- Select --'])[2]//parent::div)[1]", "//span[text()='Chief Executive Officer']/parent::div", "Chief Executive Officer", "(//div[@class='oxd-select-text-input'])[3]")
-  cy.wait(3000)
-  user.getValueFromDropdown("(//div[@class='oxd-select-text-input'])[3]").then((value) => {
+Then('User select any option from the Dropdown', function() {
+  ui_user.selectValueFromDropdown("((//div[text()='-- Select --'])[2]//parent::div)[1]", "//span[text()='Chief Executive Officer']/parent::div", "Chief Executive Officer", "(//div[@class='oxd-select-text-input'])[3]")
+  
+  ui_user.getValueFromDropdown("(//div[@class='oxd-select-text-input'])[3]").then((value) => {
   cy.log(value);
-  cy.wait(3000);
-  user.countsVisibleElements("(//div[@class='oxd-select-text-input'])").then((count) => {
+  
+  ui_user.countsVisibleElements("(//div[@class='oxd-select-text-input'])").then((count) => {
     cy.log("Number of visible elements: " + count);
-  cy.wait(3000);
-  user.listsVisibleTexts("//label[@class='oxd-label']").then((texts) => {
+  
+  ui_user.listsVisibleTexts("//label[@class='oxd-label']").then((texts) => {
     cy.log("Visible texts: " + texts.join(", "));
     for (i of texts){
-      cy.wait(300)
+      
       cy.log(i)
     }
 
   })
+  cy.log(getContextVar(this, "UserName"));
+  
   })
 })
 });
 
 
 Then('User enable the CheckBox',()=>{
-  user.enablesCheckbox("(//input[@type='checkbox'])[3]","(//input[@type='checkbox'])[3]")
+  ui_user.enablesCheckbox("(//input[@type='checkbox'])[3]","(//input[@type='checkbox'])[3]")
   cy.wait(3000)
-  user.disablesCheckbox("(//input[@type='checkbox'])[3]","(//input[@type='checkbox'])[3]")
+  ui_user.disablesCheckbox("(//input[@type='checkbox'])[3]","(//input[@type='checkbox'])[3]")
   cy.wait(3000)
 
 })
 
 Then('then disable the CheckBox', () =>{
-  user.disablesCheckbox("(//input[@type='checkbox'])[3]","(//input[@type='checkbox'])[3]")
+  ui_user.disablesCheckbox("(//input[@type='checkbox'])[3]","(//input[@type='checkbox'])[3]")
   cy.wait(3000)
 })
 
@@ -81,7 +85,7 @@ Given('User is on Hoorokey App', () => {
 })
 
 When('User Expand the collapse', () => {
-  user.expandsDetails("//a[@id='openberkeley-collapsible-container-0-trigger']")
+  ui_user.expandsDetails("//a[@id='openberkeley-collapsible-container-0-trigger']")
   cy.wait(3000)
 })
 
@@ -92,7 +96,7 @@ Given('User is on DragAndDrop App', () => {
 })
 
 When('User Drag and Drop the element', () => {
-  user.dragAndDrop("//div[@id='column-a']", "//div[@id='column-b']")
+  ui_user.dragAndDrop("//div[@id='column-a']", "//div[@id='column-b']")
 
   cy.wait(5000)
 })
@@ -104,13 +108,13 @@ Given('User is on Toggle App', () => {
 })
 
 When('User Disable the toggle', () => {
-  user.disablesToggle("//label[@for='ng-toggle-6']/child::div")
+  ui_user.disablesToggle("//label[@for='ng-toggle-6']/child::div")
   cy.wait(1000)
  
 })
 
 Then('User Enable the toggle', () => {
- user.enablesToggle("//label[@for='ng-toggle-6']/child::div")
+ ui_user.enablesToggle("//label[@for='ng-toggle-6']/child::div")
  cy.wait(1000)
 })
 
@@ -120,35 +124,35 @@ Given('User is on Loader App', () => {
 })
 
 When('User Click on the Button to show loader', () => {
-  user.click("//button[text()='Start']");
+  ui_user.click("//button[text()='Start']");
  
 })
 
 Then('User verify text after loader is displayed', () => {
-  user.waitForLoaderToDisappear("//div[@id='loading']/child::img");
-  user.getText("//div[@id='finish']/child::h4").then(text => {
+  ui_user.waitForLoaderToDisappear("//div[@id='loading']/child::img");
+  ui_user.getText("//div[@id='finish']/child::h4").then(text => {
     expect(text).to.eq("Hello World!");
   });
  
 })
 
 
-Given('User is on Download and Upload App', () => {
+Given('User is on Upload App', () => {
   cy.visit("https://practice.expandtesting.com/upload");
   cy.wait(1000);
-  user.uploadFile("//input[@id='fileInput']","C:\\Users\\a00571008\\Downloads\\Sudhanshu_Pandey (2).pdf")
+  ui_user.uploadFile("//input[@id='fileInput']","C:\\Users\\a00571008\\Downloads\\Sudhanshu_Pandey (2).pdf")
   cy.wait(3000);
 });
 
 
 When('User Upload A File', () => {
-  user.uploadFile("//input[@id='fileInput']","C:\\Users\\a00571008\\Downloads\\Sudhanshu_Pandey (2).pdf")
+  ui_user.uploadFile("//input[@id='fileInput']","C:\\Users\\a00571008\\Downloads\\Sudhanshu_Pandey (2).pdf")
   cy.wait(3000);
-  user.click("//button[text()='Upload']")
+  ui_user.click("//button[text()='Upload']")
 });
 
 Then('User verify the file is uploaded successfully', () => {
-  if (user.validateUploadedFile("//div[@id='uploaded-files']","C:\\Users\\a00571008\\Downloads\\Sudhanshu_Pandey (2).pdf")){
+  if (ui_user.validateUploadedFile("//div[@id='uploaded-files']","C:\\Users\\a00571008\\Downloads\\Sudhanshu_Pandey (2).pdf")){
     cy.log("File uploaded successfully");
   }
   
@@ -157,7 +161,7 @@ Then('User verify the file is uploaded successfully', () => {
 Given('User Click on the Download Button', () => {
   cy.visit('https://demo.automationtesting.in/FileDownload.html');
   cy.wait(2000);
-  user.downloadFile("(//a[text()='Download'])[1]",'XYZ')
+  ui_user.downloadFile("(//a[text()='Download'])[1]",'XYZ')
   cy.wait(5000);
 
 });

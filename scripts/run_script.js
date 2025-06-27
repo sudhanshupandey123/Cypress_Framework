@@ -1,6 +1,3 @@
-// Description: This script reads the TAGS variable from cypress.env.json and runs Cypress tests with the specified tags.
-
-
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
@@ -9,16 +6,24 @@ const path = require('path');
 const envJsonPath = path.resolve(__dirname, '../cypress.env.json');
 const envJsonContent = fs.readFileSync(envJsonPath, 'utf8');
 const envVars = JSON.parse(envJsonContent);
-const tags = envVars.TAGS ? envVars.TAGS.trim() : '';
+let tags = envVars.TAGS ? envVars.TAGS.trim() : '';
 
 if (!tags) {
   console.error('No TAGS found in cypress.env.json.');
   process.exit(1);
 }
 
-console.log(`Running Cypress Cucumber tests with tag expression: ${tags}`);
+// Convert comma-separated tags to cucumber expression with 'or'
+const tagExpression = tags
+  .split(',')
+  .map(tag => tag.trim())
+  .filter(Boolean)
+  .join(' or ');
 
-const command = `npx cypress run --headed --browser chrome --env cucumberTags='${tags}'`;
+console.log(`Running Cypress Cucumber tests with tag expression: ${tagExpression}`);
+
+// const command = `npx cypress run --headed --browser chrome --env cucumberTags="${tagExpression}"`;
+const command = `npx cypress run --headed --browser chrome --env TAGS="${tagExpression}"`;
 
 try {
   execSync(command, { stdio: 'inherit', shell: 'powershell.exe' });
@@ -27,3 +32,5 @@ try {
 } catch (err) {
   process.exit(err.status || 1);
 }
+
+
